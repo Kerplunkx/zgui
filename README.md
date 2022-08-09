@@ -2,7 +2,7 @@
 It contains a clone of [zgui](https://github.com/michal-z/zig-gamedev/tree/main/libs/zgpu) by [michal-z](https://github.com/michal-z) along with custom bindings inspired by michal-z's wgpu bindings.
 
 ## Getting Started
-Clone this repo, copy it to `root` of your folder(`root/lib` is more preferred)
+Clone this repo, copy it to `root` of your project(`root/lib` is more preferred)
 In your build.zig file, add
 ```zig
 exe.linkLibC(); //To compile imgui
