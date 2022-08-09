@@ -12,10 +12,10 @@ exe.addPackage(zgui);
 exe.addPackage(zgui_glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
 exe.addPackage(zgui_opengl); //Add OpenGL support for Imgui
 ```
-# Currently Supported
+## Currently Supported
 - OpenGL
 - GLFW (mach-glfw)
 
-# Planned
-- Vulkan
+## Planned
+- [ ] Vulkan
 + more
