@@ -7,10 +7,10 @@ In your build.zig file, add
 ```zig
 exe.linkLibC(); //To compile imgui
 exe.linkLibCpp(); // To compile imgui
-link_imgui(exe);
-exe.addPackage(zgui);
-exe.addPackage(zgui_glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
-exe.addPackage(zgui_opengl); //Add OpenGL support for Imgui
+zgui.link_imgui(exe);
+exe.addPackage(zgui.zgui);
+exe.addPackage(zgui.zgui_glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
+exe.addPackage(zgui.zgui_opengl); //Add OpenGL support for Imgui
 ```
 ## Currently Supported
 - OpenGL
