@@ -3,21 +3,19 @@ const std = @import("std");
 pub fn link_imgui(exe: *std.build.LibExeObjStep) void {
     exe.linkLibC();
     exe.linkLibCpp();
-    exe.addIncludeDir(thisDir() ++ "/libs");
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui_widgets.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui_tables.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui_draw.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui_demo.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/zgui.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui_impl_glfw.cpp", &.{""});
-    exe.addCSourceFile(thisDir() ++ "/libs/imgui/imgui_impl_opengl3.cpp", &.{""});
+    exe.addIncludeDir(comptime thisDir() ++ "/libs");
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_widgets.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_tables.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_draw.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_demo.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/zgui.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_impl_glfw.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_impl_opengl3.cpp", &.{""});
 }
 
-fn thisDir() []const u8 {
-    comptime {
-        return std.fs.path.dirname(@src().file) orelse ".";
-    }
+inline fn thisDir() []const u8 {
+    return std.fs.path.dirname(@src().file) orelse ".";
 }
 
 pub const zgui = std.build.Pkg{
