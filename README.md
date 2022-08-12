@@ -12,6 +12,10 @@ exe.addPackage(zgui.zgui);
 exe.addPackage(zgui.zgui_glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
 exe.addPackage(zgui.zgui_opengl); //Add OpenGL support for Imgui
 ```
+
+## To run Examples
+Please make sure the contents of this repository(excluding examples) are copied to examples/deps/zgui/
+
 ## Currently Supported
 - OpenGL
 - GLFW (mach-glfw)
