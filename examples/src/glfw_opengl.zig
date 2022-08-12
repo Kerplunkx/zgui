@@ -74,7 +74,7 @@ pub fn main() void {
         zgui_opengl.newFrame();
         zgui_glfw.newFrame();
         zgui.newFrame();
-
+        zgui.image();
         zgui.showDemoWindow(&show_demo);
 
         zgui.render();
