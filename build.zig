@@ -1,38 +1,5 @@
 const std = @import("std");
 
-pub fn build(b: *std.build.Builder) void {
-    const mode = b.standardReleaseOptions();
-    const target = b.standardTargetOptions(.{});
-
-    {
-        const exe = exampleExe(b, "glfw_opengl", mode, target);
-        exe.addPackage(zgui_opengl);
-        exe.addPackage(zgui_glfw);
-    }
-}
-
-fn exampleExe(b: *std.build.Builder, comptime name: []const u8, mode: std.builtin.Mode, target: std.zig.CrossTarget) *std.build.LibExeObjStep {
-    const exe = b.addExecutable(name, "examples/" ++ name ++ ".zig");
-    exe.setBuildMode(mode);
-    exe.setTarget(target);
-    const glfw = @import("examples/deps/mach-glfw/build.zig");
-    link_imgui(exe);
-    exe.addPackage(glfw.pkg);
-    glfw.link(b, exe, .{
-        .vulkan = false,
-        .metal = false,
-        .opengl = true,
-    });
-    exe.addPackage(zgui);
-    exe.install();
-
-    const run_step = b.step(name, "Run " ++ name);
-    const run_cmd = exe.run();
-    run_step.dependOn(&run_cmd.step);
-
-    return exe;
-}
-
 pub fn link_imgui(exe: *std.build.LibExeObjStep) void {
     exe.linkLibC();
     exe.linkLibCpp();
