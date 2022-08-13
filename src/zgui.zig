@@ -1214,8 +1214,17 @@ extern fn zguiDragScalarN(
 // Widgets: Image
 //
 //--------------------------------------------------------------------------------------------------
+const ImageParams = struct {
+    uv0: [2]f32 = [2]f32{ 0.0, 0.0 },
+    uv1: [2]f32 = [2]f32{ 1.0, 1.0 },
+    tint_colour: [4]f32 = [4]f32{ 1.0, 1.0, 1.0, 1.0 },
+    border_colour: [4]f32 = [4]f32{ 0.0, 0.0, 0.0, 0.0 },
+};
+
+pub fn image(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: ImageParams) void {
+    zguiImage(user_texture_id, size, &args.uv0, &args.uv1, &args.tint_colour, &args.border_colour);
+}
 extern fn zguiImage(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, tint_col: *const [4]f32, border_col: *const [4]f32) void;
-pub const image = zguiImage;
 //--------------------------------------------------------------------------------------------------
 //
 // Widgets: Regular Sliders
@@ -2098,6 +2107,10 @@ fn typeToDataTypeEnum(comptime T: type) DataType {
         else => @compileError("Only fundamental scalar types allowed"),
     };
 }
+//--------------------------------------------------------------------------------------------------
+//
+// Widgets: Table
+//
 //--------------------------------------------------------------------------------------------------
 pub fn beginTable(name: [:0]const u8, column: u32) bool {
     return zguiBeginTable(name, column);
