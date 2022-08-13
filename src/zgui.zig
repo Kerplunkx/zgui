@@ -1991,6 +1991,7 @@ pub fn selectableStatePtr(label: [:0]const u8, args: SelectableStatePtr) bool {
     return zguiSelectableStatePtr(label, args.pselected, @bitCast(u32, args.flags), args.w, args.h);
 }
 extern fn zguiSelectableStatePtr(label: [*:0]const u8, pselected: *bool, flags: u32, w: f32, h: f32) bool;
+
 //--------------------------------------------------------------------------------------------------
 //
 // Widgets: List Boxes
@@ -2091,3 +2092,28 @@ fn typeToDataTypeEnum(comptime T: type) DataType {
     };
 }
 //--------------------------------------------------------------------------------------------------
+
+pub fn image(texturePointer: *anyopaque, width: f32, height: f32) void {
+    zguiImage(texturePointer, width, height);
+}
+extern fn zguiImage(texturePointer: *anyopaque, width: f32, height: f32) void;
+
+pub fn beginTable(name: [:0]const u8, column: u32) bool {
+    return zguiBeginTable(name, column);
+}
+extern fn zguiBeginTable(name: [*:0]const u8, column: u32) bool;
+
+pub fn endTable() void {
+    zguiEndTable();
+}
+extern fn zguiEndTable() void;
+
+pub fn tableNextRow() void {
+    zguiTableNextRow();
+}
+extern fn zguiTableNextRow() void;
+
+pub fn tableNextColumn() bool {
+    return zguiTableNextColumn();
+}
+extern fn zguiTableNextColumn() bool;

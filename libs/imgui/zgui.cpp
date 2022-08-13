@@ -1046,3 +1046,22 @@ ZGUI_API bool zguiIsAnyItemActive(void) {
 ZGUI_API bool zguiIsAnyItemFocused(void) {
     return ImGui::IsAnyItemFocused();
 }
+
+
+ZGUI_API void zguiImage(void* texturePointer, float width, float height) {
+    ImTextureID ptr = texturePointer;
+    ImGui::Image(ptr,ImVec2(width, height));
+}
+
+ZGUI_API bool zguiBeginTable(const char* str_id, int column) {
+    return ImGui::BeginTable(str_id,column,0,ImVec2(0.0f, 0.0f),0.0f);
+}
+ZGUI_API void zguiEndTable() {
+    ImGui::EndTable();
+}
+ZGUI_API void zguiTableNextRow() {
+    ImGui::TableNextRow(0,0.0f);
+}
+ZGUI_API bool zguiTableNextColumn() {
+    return ImGui::TableNextColumn();
+}
