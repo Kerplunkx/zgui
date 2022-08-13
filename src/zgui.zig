@@ -1211,6 +1211,13 @@ extern fn zguiDragScalarN(
 ) bool;
 //--------------------------------------------------------------------------------------------------
 //
+// Widgets: Image
+//
+//--------------------------------------------------------------------------------------------------
+extern fn zguiImage(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, tint_col: *const [4]f32, border_col: *const [4]f32) void;
+pub const image = zguiImage;
+//--------------------------------------------------------------------------------------------------
+//
 // Widgets: Regular Sliders
 //
 //--------------------------------------------------------------------------------------------------
@@ -2092,12 +2099,6 @@ fn typeToDataTypeEnum(comptime T: type) DataType {
     };
 }
 //--------------------------------------------------------------------------------------------------
-
-pub fn image(texturePointer: *anyopaque, width: f32, height: f32) void {
-    zguiImage(texturePointer, width, height);
-}
-extern fn zguiImage(texturePointer: *anyopaque, width: f32, height: f32) void;
-
 pub fn beginTable(name: [:0]const u8, column: u32) bool {
     return zguiBeginTable(name, column);
 }

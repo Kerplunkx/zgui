@@ -5,17 +5,20 @@ It contains a clone of [zgui](https://github.com/michal-z/zig-gamedev/tree/main/
 Clone this repo, copy it to `root` of your project(`root/lib` is more preferred)
 In your build.zig file, add
 ```zig
-exe.linkLibC(); //To compile imgui
 exe.linkLibCpp(); // To compile imgui
 zgui.link_imgui(exe);
 exe.addPackage(zgui.zgui);
 exe.addPackage(zgui.zgui_glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
 exe.addPackage(zgui.zgui_opengl); //Add OpenGL support for Imgui
 ```
+
+## To run Examples
+Please make sure the contents of this repository(excluding examples) are copied to examples/deps/zgui/
+
 ## Currently Supported
 - OpenGL
 - GLFW (mach-glfw)
 
 ## Planned
-- [ ] Vulkan
+- Vulkan
 + more
