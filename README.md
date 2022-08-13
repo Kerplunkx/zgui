@@ -5,7 +5,6 @@ It contains a clone of [zgui](https://github.com/michal-z/zig-gamedev/tree/main/
 Clone this repo, copy it to `root` of your project(`root/lib` is more preferred)
 In your build.zig file, add
 ```zig
-exe.linkLibC(); //To compile imgui
 exe.linkLibCpp(); // To compile imgui
 zgui.link_imgui(exe);
 exe.addPackage(zgui.zgui);
@@ -21,5 +20,5 @@ Please make sure the contents of this repository(excluding examples) are copied 
 - GLFW (mach-glfw)
 
 ## Planned
-- [ ] Vulkan
+- Vulkan
 + more
