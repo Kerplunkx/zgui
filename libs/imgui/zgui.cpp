@@ -1091,10 +1091,6 @@ ZGUI_API void zguiTableHeader(const char* label) {
     return ImGui::TableHeader(label);
 }
 
-ZGUI_API ImGuiTableSortSpecs* zguiTableGetSortSpecs() {
-    return ImGui::TableGetSortSpecs();
-}
-
 ZGUI_API int zguiTableGetColumnCount() {
     return ImGui::TableGetColumnCount();
 }

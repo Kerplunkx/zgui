@@ -2272,3 +2272,51 @@ pub fn tableHeader(label: [:0]const u8) void {
 }
 extern fn zguiTableHeader(label: [*:0]const u8) void;
 //--------------------------------------------------------------------------------------------------
+
+pub fn tableGetColumnCount() u32 {
+    return zguiTableGetColumnCount();
+}
+extern fn zguiTableGetColumnCount() u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableGetColumnIndex() u32 {
+    return zguiTableGetColumnIndex();
+}
+extern fn zguiTableGetColumnIndex() u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableGetRowIndex() u32 {
+    return zguiTableGetRowIndex();
+}
+extern fn zguiTableGetRowIndex() u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableGetColumnName(column_n: i32) [*:0]const u8 {
+    return zguiTableGetColumnName(column_n);
+}
+extern fn zguiTableGetColumnName(column_n: i32) [*:0]const u8;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableiGetColumnFlags(column_n: i32) ImGuiTableColumnFlags {
+    return @bitCast(ImGuiTableColumnFlags, zguiTableGetColumnFlags(column_n));
+}
+extern fn zguiTableGetColumnFlags(column_n: i32) u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableSetColumnEnabled(column_n: i32, v: bool) void {
+    zguiTableSetColumnEnabled(column_n, v);
+}
+extern fn zguiTableSetColumnEnabled(column_n: i32, v: bool) void;
+
+//--------------------------------------------------------------------------------------------------
+
+const ImGuiTableBgTarget = enum(u32) {
+    None,
+    RowBg0,
+    RowBg1,
+    CellBg,
+};
+pub fn tableSetBgColor(target: ImGuiTableBgTarget, color: u32, column_n: i32) void {
+    zguiTableSetBgColor(@bitCast(u32, target), color, column_n);
+}
+extern fn zguiTableSetBgColor(target: u32, color: u32, column_n: i32) void;
