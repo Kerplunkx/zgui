@@ -1132,3 +1132,68 @@ ZGUI_API bool zguiIsAnyItemActive(void) {
 ZGUI_API bool zguiIsAnyItemFocused(void) {
     return ImGui::IsAnyItemFocused();
 }
+
+ZGUI_API bool zguiBeginTable(const char* str_id, int column, ImGuiTableFlags flags, const ImVec2& outer_size,float inner_width) {
+    return ImGui::BeginTable(str_id,column,flags,outer_size,inner_width);
+}
+
+ZGUI_API void zguiEndTable() {
+    return ImGui::EndTable();
+}
+
+ZGUI_API void zguiTableNextRow(ImGuiTableRowFlags row_flags, float min_row_height) {
+    return ImGui::TableNextRow(row_flags,min_row_height);
+}
+
+ZGUI_API bool zguiTableNextColumn() {
+    return ImGui::TableNextColumn();
+}
+
+ZGUI_API bool zguiTableSetColumnIndex(int column_n) {
+    return ImGui::TableSetColumnIndex(column_n);
+}
+
+ZGUI_API void zguiTableSetupColumn(const char* label, ImGuiTableColumnFlags flags, float init_width_or_weight, ImGuiID user_id) {
+    return ImGui::TableSetupColumn(label, flags, init_width_or_weight, user_id);
+}
+
+ZGUI_API void zguiTableSetupScrollFreeze(int cols, int rows) {
+    return ImGui::TableSetupScrollFreeze(cols, rows);
+}
+
+ZGUI_API void zguiTableHeadersRow() {
+    return ImGui::TableHeadersRow();
+}
+
+ZGUI_API void zguiTableHeader(const char* label) {
+    return ImGui::TableHeader(label);
+}
+
+ZGUI_API int zguiTableGetColumnCount() {
+    return ImGui::TableGetColumnCount();
+}
+
+ZGUI_API int zguiTableGetColumnIndex() {
+    return ImGui::TableGetColumnIndex();
+}
+
+ZGUI_API int zguiTableGetRowIndex() {
+    return ImGui::TableGetRowIndex();
+}
+
+ZGUI_API const char* zguiTableGetColumnName(int column_n) {
+    return ImGui::TableGetColumnName(column_n);
+}
+
+ZGUI_API ImGuiTableColumnFlags zguiTableGetColumnFlags(int column_n) {
+    return ImGui::TableGetColumnFlags(column_n);
+}
+
+ZGUI_API void zguiTableSetColumnEnabled(int column_n, bool v) {
+    return ImGui::TableSetColumnEnabled(column_n,v);
+}
+
+ZGUI_API void zguiTableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n) {
+    return ImGui::TableSetBgColor(target, color, column_n);
+}
+=======

@@ -1371,6 +1371,35 @@ extern fn zguiDragScalarN(
 ) bool;
 //--------------------------------------------------------------------------------------------------
 //
+// Widgets: Image
+//
+//--------------------------------------------------------------------------------------------------
+const ImageParams = struct {
+    uv0: [2]f32 = [2]f32{ 0.0, 0.0 },
+    uv1: [2]f32 = [2]f32{ 1.0, 1.0 },
+    tint_colour: [4]f32 = [4]f32{ 1.0, 1.0, 1.0, 1.0 },
+    border_colour: [4]f32 = [4]f32{ 0.0, 0.0, 0.0, 0.0 },
+};
+
+pub fn image(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: ImageParams) void {
+    zguiImage(user_texture_id, size, &args.uv0, &args.uv1, &args.tint_colour, &args.border_colour);
+}
+extern fn zguiImage(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, tint_col: *const [4]f32, border_col: *const [4]f32) void;
+
+const ImageButtonParams = struct {
+    uv0: [2]f32 = [2]f32{ 0.0, 0.0 },
+    uv1: [2]f32 = [2]f32{ 1.0, 1.0 },
+    frame_padding: i32 = -1,
+    bg_colour: [4]f32 = [4]f32{ 0.0, 0.0, 0.0, 0.0 },
+    tint_colour: [4]f32 = [4]f32{ 1.0, 1.0, 1.0, 1.0 },
+};
+
+pub fn imageButton(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: ImageButtonParams) void {
+    zguiImageButton(user_texture_id, size, &args.uv0, &args.uv1, &args.frame_padding, &args.bg_colour, &args.tint_colour);
+}
+extern fn zguiImageButton(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, frame_padding: *const i32, bg_col: *const [4]f32, tint_col: *const [4]f32) void;
+//--------------------------------------------------------------------------------------------------
+//
 // Widgets: Regular Sliders
 //
 //--------------------------------------------------------------------------------------------------
@@ -2163,7 +2192,8 @@ const SelectableStatePtr = struct {
 };
 pub fn selectableStatePtr(label: [:0]const u8, args: SelectableStatePtr) bool {
     return zguiSelectableStatePtr(label, args.pselected, @bitCast(u32, args.flags), args.w, args.h);
-}
+extern fn zguiSelectableStatePtr(label: [*:0]const u8, pselected: *bool, flags: u32, w: f32, h: f32) bool;
+
 extern fn zguiSelectableStatePtr(
     label: [*:0]const u8,
     pselected: *bool,
@@ -2271,3 +2301,202 @@ fn typeToDataTypeEnum(comptime T: type) DataType {
     };
 }
 //--------------------------------------------------------------------------------------------------
+//
+// Widgets: Table
+//
+//--------------------------------------------------------------------------------------------------
+const ImGuiTableFlags = packed struct {
+    const ImGuiTableFlagsSizing = enum(u3) {
+        SizingNone,
+        SizingFixedFit,
+        SizingFixedSame,
+        SizingStretchProp,
+        SizingStretchSame,
+    };
+
+    // Features
+    resizable: bool = false,
+    reorderable: bool = false,
+    hideable: bool = false,
+    sortable: bool = false,
+    noSavedSettings: bool = false,
+    contextMenuInBody: bool = false,
+    // Decorations
+    rowBg: bool = false,
+    bordersInnerH: bool = false,
+    bordersOuterH: bool = false,
+    bordersInnerV: bool = false,
+    bordersOuterV: bool = false,
+    noBordersInBody: bool = false,
+    noBordersInBodyUntilResize: bool = false,
+    // Sizing Policy (read above for defaults)
+    sizing: ImGuiTableFlagsSizing = .SizingNone,
+    // Sizing Extra Options
+    noHostExtendX: bool = false,
+    noHostExtendY: bool = false,
+    noKeepColumnsVisible: bool = false,
+    preciseWidths: bool = false,
+    // Clipping
+    noClip: bool = false,
+    // Padding
+    padOuterX: bool = false,
+    noPadOuterX: bool = false,
+    noPadInnerX: bool = false,
+    // Scrolling
+    scrollX: bool = false,
+    scrollY: bool = false,
+    // Sorting
+    sortMulti: bool = false,
+    sortTristate: bool = false,
+
+    padding: u4 = 0,
+    comptime {
+        assert(@sizeOf(@This()) == @sizeOf(u32) and @bitSizeOf(@This()) == @bitSizeOf(u32));
+    }
+};
+
+//--------------------------------------------------------------------------------------------------
+pub fn beginTable(args: struct {
+    name: [:0]const u8,
+    column: u32,
+    flags: ImGuiTableFlags = .{},
+    outer_size: [2]f32 = [2]f32{ 0.0, 0.0 },
+    inner_width: f32 = 0.0,
+}) bool {
+    return zguiBeginTable(args.name, args.column, @bitCast(u32, args.flags), &args.outer_size, args.inner_width);
+}
+extern fn zguiBeginTable(name: [*:0]const u8, column: u32, flags: u32, outer_size: *const [2]f32, inner_width: f32) bool;
+//--------------------------------------------------------------------------------------------------
+pub fn endTable() void {
+    zguiEndTable();
+}
+extern fn zguiEndTable() void;
+//--------------------------------------------------------------------------------------------------
+const ImGuiTableRowFlags = enum(u32) { None, Headers };
+pub fn tableNextRow(args: struct {
+    flags: ImGuiTableRowFlags = .None,
+    min_row_height: f32 = 0.0,
+}) void {
+    zguiTableNextRow(@bitCast(u32, args.flags), args.min_row_height);
+}
+extern fn zguiTableNextRow(flags: u32, min_row_height: f32) void;
+//--------------------------------------------------------------------------------------------------
+pub fn tableNextColumn() bool {
+    return zguiTableNextColumn();
+}
+extern fn zguiTableNextColumn() bool;
+//--------------------------------------------------------------------------------------------------
+pub fn tableSetColumnIndex(column_n: i32) bool {
+    return zguiTableSetColumnIndex(column_n);
+}
+extern fn zguiTableSetColumnIndex(column_n: i32) bool;
+//--------------------------------------------------------------------------------------------------
+const ImGuiTableColumnFlags = packed struct {
+    disabled: bool = false,
+    defaultHide: bool = false,
+    defaultSort: bool = false,
+    widthStretch: bool = false,
+    widthFixed: bool = false,
+    noResize: bool = false,
+    noReorder: bool = false,
+    noHide: bool = false,
+    noClip: bool = false,
+    noSort: bool = false,
+    noSortAscending: bool = false,
+    noSortDescending: bool = false,
+    noHeaderLabel: bool = false,
+    noHeaderWidth: bool = false,
+    preferSortAscending: bool = false,
+    preferSortDescending: bool = false,
+    indentEnable: bool = false,
+    indentDisable: bool = false,
+    padding_1: u6 = 0,
+    // Output status flags, read-only via TableGetColumnFlags()
+    isEnabled: bool = false,
+    isVisible: bool = false,
+    isSorted: bool = false,
+    isHovered: bool = false,
+    padding_2: u2 = 0,
+    noDirectResize_: bool = false,
+    padding_3: u1 = 0,
+
+    comptime {
+        assert(@sizeOf(@This()) == @sizeOf(u32) and @bitSizeOf(@This()) == @bitSizeOf(u32));
+    }
+};
+pub fn tableSetupColumn(args: struct {
+    label: [:0]const u8,
+    flags: ImGuiTableColumnFlags = .{},
+    init_width_or_weight: f32 = 0.0,
+    user_id: u32 = 0,
+}) void {
+    zguiTableSetupColumn(args.label, @bitCast(u32, args.flags), args.init_width_or_weight, args.user_id);
+}
+extern fn zguiTableSetupColumn(label: [*:0]const u8, flags: u32, init_width_or_weight: f32, user_id: u32) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableSetupScrollFreeze(cols: i32, rows: i32) void {
+    zguiTableSetupScrollFreeze(cols, rows);
+}
+extern fn zguiTableSetupScrollFreeze(cols: i32, rows: i32) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableHeadersRow() void {
+    zguiTableHeadersRow();
+}
+extern fn zguiTableHeadersRow() void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableHeader(label: [:0]const u8) void {
+    zguiTableHeader(label);
+}
+extern fn zguiTableHeader(label: [*:0]const u8) void;
+//--------------------------------------------------------------------------------------------------
+
+pub fn tableGetColumnCount() u32 {
+    return zguiTableGetColumnCount();
+}
+extern fn zguiTableGetColumnCount() u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableGetColumnIndex() u32 {
+    return zguiTableGetColumnIndex();
+}
+extern fn zguiTableGetColumnIndex() u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableGetRowIndex() u32 {
+    return zguiTableGetRowIndex();
+}
+extern fn zguiTableGetRowIndex() u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableGetColumnName(column_n: i32) [*:0]const u8 {
+    return zguiTableGetColumnName(column_n);
+}
+extern fn zguiTableGetColumnName(column_n: i32) [*:0]const u8;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableiGetColumnFlags(column_n: i32) ImGuiTableColumnFlags {
+    return @bitCast(ImGuiTableColumnFlags, zguiTableGetColumnFlags(column_n));
+}
+extern fn zguiTableGetColumnFlags(column_n: i32) u32;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableSetColumnEnabled(column_n: i32, v: bool) void {
+    zguiTableSetColumnEnabled(column_n, v);
+}
+extern fn zguiTableSetColumnEnabled(column_n: i32, v: bool) void;
+
+//--------------------------------------------------------------------------------------------------
+
+const ImGuiTableBgTarget = enum(u32) {
+    None,
+    RowBg0,
+    RowBg1,
+    CellBg,
+};
+pub fn tableSetBgColor(target: ImGuiTableBgTarget, color: u32, column_n: i32) void {
+    zguiTableSetBgColor(@bitCast(u32, target), color, column_n);
+}
+extern fn zguiTableSetBgColor(target: u32, color: u32, column_n: i32) void;
