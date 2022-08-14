@@ -2175,21 +2175,32 @@ const ImGuiTableFlags = packed struct {
     }
 };
 
-pub fn beginTable(args: struct { name: [:0]const u8, column: u32, flags: ImGuiTableFlags = .{}, outer_size: [2]f32 = [2]f32{ 0.0, 0.0 }, inner_width: f32 = 0.0 }) bool {
+//--------------------------------------------------------------------------------------------------
+pub fn beginTable(args: struct {
+    name: [:0]const u8,
+    column: u32,
+    flags: ImGuiTableFlags = .{},
+    outer_size: [2]f32 = [2]f32{ 0.0, 0.0 },
+    inner_width: f32 = 0.0,
+}) bool {
     return zguiBeginTable(args.name, args.column, @bitCast(u32, args.flags), &args.outer_size, args.inner_width);
 }
 extern fn zguiBeginTable(name: [*:0]const u8, column: u32, flags: u32, outer_size: *const [2]f32, inner_width: f32) bool;
-
+//--------------------------------------------------------------------------------------------------
 pub fn endTable() void {
     zguiEndTable();
 }
 extern fn zguiEndTable() void;
-
-pub fn tableNextRow() void {
-    zguiTableNextRow();
+//--------------------------------------------------------------------------------------------------
+const ImGuiTableRowFlags = enum(u32) { None, Headers };
+pub fn tableNextRow(args: struct {
+    flags: ImGuiTableRowFlags = .None,
+    min_row_height: f32 = 0.0,
+}) void {
+    zguiTableNextRow(@bitCast(u32, args.flags), args.min_row_height);
 }
-extern fn zguiTableNextRow() void;
-
+extern fn zguiTableNextRow(flags: u32, min_row_height: f32) void;
+//--------------------------------------------------------------------------------------------------
 pub fn tableNextColumn() bool {
     return zguiTableNextColumn();
 }
