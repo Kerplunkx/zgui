@@ -873,6 +873,8 @@ ZGUI_API void zguiNewFrame(void) {
     ImGui::NewFrame();
 }
 
+
+
 ZGUI_API void zguiRender(void) {
     ImGui::Render();
 }
@@ -1196,4 +1198,3 @@ ZGUI_API void zguiTableSetColumnEnabled(int column_n, bool v) {
 ZGUI_API void zguiTableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n) {
     return ImGui::TableSetBgColor(target, color, column_n);
 }
-=======

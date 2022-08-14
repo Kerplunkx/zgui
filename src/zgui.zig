@@ -1371,35 +1371,6 @@ extern fn zguiDragScalarN(
 ) bool;
 //--------------------------------------------------------------------------------------------------
 //
-// Widgets: Image
-//
-//--------------------------------------------------------------------------------------------------
-const ImageParams = struct {
-    uv0: [2]f32 = [2]f32{ 0.0, 0.0 },
-    uv1: [2]f32 = [2]f32{ 1.0, 1.0 },
-    tint_colour: [4]f32 = [4]f32{ 1.0, 1.0, 1.0, 1.0 },
-    border_colour: [4]f32 = [4]f32{ 0.0, 0.0, 0.0, 0.0 },
-};
-
-pub fn image(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: ImageParams) void {
-    zguiImage(user_texture_id, size, &args.uv0, &args.uv1, &args.tint_colour, &args.border_colour);
-}
-extern fn zguiImage(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, tint_col: *const [4]f32, border_col: *const [4]f32) void;
-
-const ImageButtonParams = struct {
-    uv0: [2]f32 = [2]f32{ 0.0, 0.0 },
-    uv1: [2]f32 = [2]f32{ 1.0, 1.0 },
-    frame_padding: i32 = -1,
-    bg_colour: [4]f32 = [4]f32{ 0.0, 0.0, 0.0, 0.0 },
-    tint_colour: [4]f32 = [4]f32{ 1.0, 1.0, 1.0, 1.0 },
-};
-
-pub fn imageButton(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: ImageButtonParams) void {
-    zguiImageButton(user_texture_id, size, &args.uv0, &args.uv1, &args.frame_padding, &args.bg_colour, &args.tint_colour);
-}
-extern fn zguiImageButton(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, frame_padding: *const i32, bg_col: *const [4]f32, tint_col: *const [4]f32) void;
-//--------------------------------------------------------------------------------------------------
-//
 // Widgets: Regular Sliders
 //
 //--------------------------------------------------------------------------------------------------
@@ -2192,8 +2163,7 @@ const SelectableStatePtr = struct {
 };
 pub fn selectableStatePtr(label: [:0]const u8, args: SelectableStatePtr) bool {
     return zguiSelectableStatePtr(label, args.pselected, @bitCast(u32, args.flags), args.w, args.h);
-extern fn zguiSelectableStatePtr(label: [*:0]const u8, pselected: *bool, flags: u32, w: f32, h: f32) bool;
-
+}
 extern fn zguiSelectableStatePtr(
     label: [*:0]const u8,
     pselected: *bool,
@@ -2300,6 +2270,8 @@ fn typeToDataTypeEnum(comptime T: type) DataType {
         else => @compileError("Only fundamental scalar types allowed"),
     };
 }
+//--------------------------------------------------------------------------------------------------
+
 //--------------------------------------------------------------------------------------------------
 //
 // Widgets: Table
