@@ -2205,3 +2205,70 @@ pub fn tableNextColumn() bool {
     return zguiTableNextColumn();
 }
 extern fn zguiTableNextColumn() bool;
+//--------------------------------------------------------------------------------------------------
+pub fn tableSetColumnIndex(column_n: i32) bool {
+    return zguiTableSetColumnIndex(column_n);
+}
+extern fn zguiTableSetColumnIndex(column_n: i32) bool;
+//--------------------------------------------------------------------------------------------------
+const ImGuiTableColumnFlags = packed struct {
+    disabled: bool = false,
+    defaultHide: bool = false,
+    defaultSort: bool = false,
+    widthStretch: bool = false,
+    widthFixed: bool = false,
+    noResize: bool = false,
+    noReorder: bool = false,
+    noHide: bool = false,
+    noClip: bool = false,
+    noSort: bool = false,
+    noSortAscending: bool = false,
+    noSortDescending: bool = false,
+    noHeaderLabel: bool = false,
+    noHeaderWidth: bool = false,
+    preferSortAscending: bool = false,
+    preferSortDescending: bool = false,
+    indentEnable: bool = false,
+    indentDisable: bool = false,
+    padding_1: u6 = 0,
+    // Output status flags, read-only via TableGetColumnFlags()
+    isEnabled: bool = false,
+    isVisible: bool = false,
+    isSorted: bool = false,
+    isHovered: bool = false,
+    padding_2: u2 = 0,
+    noDirectResize_: bool = false,
+    padding_3: u1 = 0,
+
+    comptime {
+        assert(@sizeOf(@This()) == @sizeOf(u32) and @bitSizeOf(@This()) == @bitSizeOf(u32));
+    }
+};
+pub fn tableSetupColumn(args: struct {
+    label: [:0]const u8,
+    flags: ImGuiTableColumnFlags = .{},
+    init_width_or_weight: f32 = 0.0,
+    user_id: u32 = 0,
+}) void {
+    zguiTableSetupColumn(args.label, @bitCast(u32, args.flags), args.init_width_or_weight, args.user_id);
+}
+extern fn zguiTableSetupColumn(label: [*:0]const u8, flags: u32, init_width_or_weight: f32, user_id: u32) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableSetupScrollFreeze(cols: i32, rows: i32) void {
+    zguiTableSetupScrollFreeze(cols, rows);
+}
+extern fn zguiTableSetupScrollFreeze(cols: i32, rows: i32) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableHeadersRow() void {
+    zguiTableHeadersRow();
+}
+extern fn zguiTableHeadersRow() void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn tableHeader(label: [:0]const u8) void {
+    zguiTableHeader(label);
+}
+extern fn zguiTableHeader(label: [*:0]const u8) void;
+//--------------------------------------------------------------------------------------------------
