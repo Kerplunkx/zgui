@@ -5,33 +5,42 @@
 const std = @import("std");
 const assert = std.debug.assert;
 //--------------------------------------------------------------------------------------------------
-pub fn init() void {
-    assert(getCurrentContext() == null);
-    temp_buffer.resize(3 * 1024 + 1) catch unreachable;
-    _ = createContext(null);
-}
-pub fn deinit() void {
-    assert(getCurrentContext() != null);
-    destroyContext(null);
-    temp_buffer.deinit();
-}
-//--------------------------------------------------------------------------------------------------
 pub const f32_min: f32 = 1.17549435082228750796873653722225e-38;
 pub const f32_max: f32 = 3.40282346638528859811704183484517e+38;
 //--------------------------------------------------------------------------------------------------
-/// `fn createContext(shared_font_atlas: ?*const anyopaque) Context`
-const createContext = zguiCreateContext;
+pub fn init() void {
+    if (getCurrentContext() == null) {
+        _ = zguiCreateContext(null);
+        temp_buffer.resize(3 * 1024 + 1) catch unreachable;
+    }
+}
 extern fn zguiCreateContext(shared_font_atlas: ?*const anyopaque) Context;
 
-/// `fn destroyContext(ctx: ?Context) void`
-const destroyContext = zguiDestroyContext;
+pub fn deinit() void {
+    if (getCurrentContext() != null) {
+        temp_buffer.deinit();
+        zguiDestroyContext(null);
+    }
+}
 extern fn zguiDestroyContext(ctx: ?Context) void;
 
-/// `fn getCurrentContext() ?Context`
 const getCurrentContext = zguiGetCurrentContext;
 extern fn zguiGetCurrentContext() ?Context;
 //--------------------------------------------------------------------------------------------------
 pub const io = struct {
+    pub fn addFontFromFile(filename: [:0]const u8, size_pixels: f32) Font {
+        return zguiIoAddFontFromFile(filename, size_pixels);
+    }
+    extern fn zguiIoAddFontFromFile(filename: [*:0]const u8, size_pixels: f32) Font;
+
+    /// `pub fn getFont(index: u32) Font`
+    pub const getFont = zguiIoGetFont;
+    extern fn zguiIoGetFont(index: u32) Font;
+
+    /// `pub fn setDefaultFont(font: Font) void`
+    pub const setDefaultFont = zguiIoSetDefaultFont;
+    extern fn zguiIoSetDefaultFont(font: Font) void;
+
     /// `pub fn zguiIoGetWantCaptureMouse() bool`
     pub const getWantCaptureMouse = zguiIoGetWantCaptureMouse;
     extern fn zguiIoGetWantCaptureMouse() bool;
@@ -39,11 +48,6 @@ pub const io = struct {
     /// `pub fn zguiIoGetWantCaptureKeyboard() bool`
     pub const getWantCaptureKeyboard = zguiIoGetWantCaptureKeyboard;
     extern fn zguiIoGetWantCaptureKeyboard() bool;
-
-    pub fn addFontFromFile(filename: [:0]const u8, size_pixels: f32) void {
-        zguiIoAddFontFromFile(filename, size_pixels);
-    }
-    extern fn zguiIoAddFontFromFile(filename: [*:0]const u8, size_pixels: f32) void;
 
     pub fn setIniFilename(filename: [:0]const u8) void {
         zguiIoSetIniFilename(filename);
@@ -61,7 +65,9 @@ pub const io = struct {
 //--------------------------------------------------------------------------------------------------
 const Context = *opaque {};
 pub const DrawData = *opaque {};
+pub const Font = *opaque {};
 pub const Ident = u32;
+pub const TextureIdent = *anyopaque;
 //--------------------------------------------------------------------------------------------------
 pub const WindowFlags = packed struct {
     no_title_bar: bool = false,
@@ -378,6 +384,71 @@ extern fn zguiGetWindowSize(size: *[2]f32) void;
 extern fn zguiGetWindowWidth() f32;
 extern fn zguiGetWindowHeight() f32;
 //--------------------------------------------------------------------------------------------------
+//
+// Style
+//
+//--------------------------------------------------------------------------------------------------
+pub const Style = extern struct {
+    alpha: f32,
+    disabled_alpha: f32,
+    window_padding: [2]f32,
+    window_rounding: f32,
+    window_border_size: f32,
+    window_min_size: [2]f32,
+    window_title_align: [2]f32,
+    window_menu_button_position: Direction,
+    child_rounding: f32,
+    child_border_size: f32,
+    popup_rounding: f32,
+    popup_border_size: f32,
+    frame_padding: [2]f32,
+    frame_rounding: f32,
+    frame_border_size: f32,
+    item_spacing: [2]f32,
+    item_inner_spacing: [2]f32,
+    cell_padding: [2]f32,
+    touch_extra_padding: [2]f32,
+    indent_spacing: f32,
+    columns_min_spacing: f32,
+    scrollbar_size: f32,
+    scrollbar_rounding: f32,
+    grab_min_size: f32,
+    grab_rounding: f32,
+    log_slider_deadzone: f32,
+    tab_rounding: f32,
+    tab_border_size: f32,
+    tab_min_width_for_close_button: f32,
+    color_button_position: Direction,
+    button_text_align: [2]f32,
+    selectable_text_align: [2]f32,
+    display_window_padding: [2]f32,
+    display_safe_area_padding: [2]f32,
+    mouse_cursor_scale: f32,
+    anti_aliased_lines: bool,
+    anti_aliased_lines_use_tex: bool,
+    anti_aliased_fill: bool,
+    curve_tessellation_tol: f32,
+    circle_tessellation_max_error: f32,
+    colors: [@typeInfo(StyleCol).Enum.fields.len][4]f32,
+
+    /// `pub fn init() Style`
+    pub const init = zguiStyleInit;
+    extern fn zguiStyleInit() Style;
+
+    /// `pub fn scaleAllSizes(style: *Style, scale_factor: f32) void`
+    pub const scaleAllSizes = zguiStyleScaleAllSizes;
+    extern fn zguiStyleScaleAllSizes(style: *Style, scale_factor: f32) void;
+
+    pub fn getColor(style: Style, idx: StyleCol) [4]f32 {
+        return style.colors[@enumToInt(idx)];
+    }
+    pub fn setColor(style: *Style, idx: StyleCol, color: [4]f32) void {
+        style.colors[@enumToInt(idx)] = color;
+    }
+};
+/// `pub fn getStyle() *Style`
+pub const getStyle = zguiGetStyle;
+extern fn zguiGetStyle() *Style;
 //--------------------------------------------------------------------------------------------------
 pub const StyleCol = enum(u32) {
     text,
@@ -519,9 +590,19 @@ extern fn zguiPushItemWidth(item_width: f32) void;
 extern fn zguiPopItemWidth() void;
 extern fn zguiSetNextItemWidth(item_width: f32) void;
 //--------------------------------------------------------------------------------------------------
+/// `pub fn getFont() Font'
+pub const getFont = zguiGetFont;
+extern fn zguiGetFont() Font;
 /// `pub fn getFontSize() f32'
 pub const getFontSize = zguiGetFontSize;
 extern fn zguiGetFontSize() f32;
+/// `void pushFont(font: Font) void`
+pub const pushFont = zguiPushFont;
+extern fn zguiPushFont(font: Font) void;
+/// `void popFont() void`
+pub const popFont = zguiPopFont;
+extern fn zguiPopFont() void;
+//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 const BeginDisabled = struct {
     disabled: bool = true,
@@ -729,6 +810,32 @@ pub fn labelText(label: [:0]const u8, comptime fmt: []const u8, args: anytype) v
 }
 extern fn zguiLabelText(label: [*:0]const u8, fmt: [*:0]const u8, ...) void;
 //--------------------------------------------------------------------------------------------------
+const CalcTextSize = struct {
+    hide_text_after_double_hash: bool = false,
+    wrap_width: f32 = -1.0,
+};
+pub fn calcTextSize(txt: []const u8, args: CalcTextSize) [2]f32 {
+    var w: f32 = undefined;
+    var h: f32 = undefined;
+    zguiCalcTextSize(
+        txt.ptr,
+        txt.ptr + txt.len,
+        args.hide_text_after_double_hash,
+        args.wrap_width,
+        &w,
+        &h,
+    );
+    return .{ w, h };
+}
+extern fn zguiCalcTextSize(
+    txt: [*]const u8,
+    txt_end: [*]const u8,
+    hide_text_after_double_hash: bool,
+    wrap_width: f32,
+    out_w: *f32,
+    out_h: *f32,
+) void;
+//--------------------------------------------------------------------------------------------------
 //
 // Widgets: Main
 //
@@ -764,6 +871,59 @@ pub fn arrowButton(label: [:0]const u8, args: ArrowButton) bool {
     return zguiArrowButton(label, args.dir);
 }
 extern fn zguiArrowButton(label: [*:0]const u8, dir: Direction) bool;
+//--------------------------------------------------------------------------------------------------
+const Image = struct {
+    w: f32,
+    h: f32,
+    uv0: [2]f32 = .{ 0.0, 0.0 },
+    uv1: [2]f32 = .{ 1.0, 1.0 },
+    tint_col: [4]f32 = .{ 1.0, 1.0, 1.0, 1.0 },
+    border_col: [4]f32 = .{ 0.0, 0.0, 0.0, 0.0 },
+};
+pub fn image(user_texture_id: TextureIdent, args: Image) void {
+    zguiImage(user_texture_id, args.w, args.h, &args.uv0, &args.uv1, &args.tint_col, &args.border_col);
+}
+extern fn zguiImage(
+    user_texture_id: TextureIdent,
+    w: f32,
+    h: f32,
+    uv0: *const [2]f32,
+    uv1: *const [2]f32,
+    tint_col: *const [4]f32,
+    border_col: *const [4]f32,
+) void;
+//--------------------------------------------------------------------------------------------------
+const ImageButton = struct {
+    w: f32,
+    h: f32,
+    uv0: [2]f32 = .{ 0.0, 0.0 },
+    uv1: [2]f32 = .{ 1.0, 1.0 },
+    frame_padding: i32 = -1,
+    bg_col: [4]f32 = .{ 0.0, 0.0, 0.0, 0.0 },
+    tint_col: [4]f32 = .{ 1.0, 1.0, 1.0, 1.0 },
+};
+pub fn imageButton(user_texture_id: TextureIdent, args: ImageButton) bool {
+    return zguiImageButton(
+        user_texture_id,
+        args.w,
+        args.h,
+        &args.uv0,
+        &args.uv1,
+        args.frame_padding,
+        &args.bg_col,
+        &args.tint_col,
+    );
+}
+extern fn zguiImageButton(
+    user_texture_id: TextureIdent,
+    w: f32,
+    h: f32,
+    uv0: *const [2]f32,
+    uv1: *const [2]f32,
+    frame_padding: i32,
+    bg_col: *const [4]f32,
+    tint_col: *const [4]f32,
+) bool;
 //--------------------------------------------------------------------------------------------------
 /// `pub fn bullet() void`
 pub const bullet = zguiBullet;
@@ -1211,13 +1371,6 @@ extern fn zguiDragScalarN(
 ) bool;
 //--------------------------------------------------------------------------------------------------
 //
-// Widgets: Image
-//
-//--------------------------------------------------------------------------------------------------
-extern fn zguiImage(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, tint_col: *const [4]f32, border_col: *const [4]f32) void;
-pub const image = zguiImage;
-//--------------------------------------------------------------------------------------------------
-//
 // Widgets: Regular Sliders
 //
 //--------------------------------------------------------------------------------------------------
@@ -1577,7 +1730,14 @@ const InputFloat = struct {
     flags: InputTextFlags = .{},
 };
 pub fn inputFloat(label: [:0]const u8, args: InputFloat) bool {
-    return zguiInputFloat(label, args.v, args.step, args.step_fast, args.cfmt, @bitCast(u32, args.flags));
+    return zguiInputFloat(
+        label,
+        args.v,
+        args.step,
+        args.step_fast,
+        args.cfmt,
+        @bitCast(u32, args.flags),
+    );
 }
 extern fn zguiInputFloat(
     label: [*:0]const u8,
@@ -1679,7 +1839,14 @@ const InputDouble = struct {
     flags: InputTextFlags = .{},
 };
 pub fn inputDouble(label: [:0]const u8, args: InputDouble) bool {
-    return zguiInputDouble(label, args.v, args.step, args.step_fast, args.cfmt, @bitCast(u32, args.flags));
+    return zguiInputDouble(
+        label,
+        args.v,
+        args.step,
+        args.step_fast,
+        args.cfmt,
+        @bitCast(u32, args.flags),
+    );
 }
 extern fn zguiInputDouble(
     label: [*:0]const u8,
@@ -1997,7 +2164,13 @@ const SelectableStatePtr = struct {
 pub fn selectableStatePtr(label: [:0]const u8, args: SelectableStatePtr) bool {
     return zguiSelectableStatePtr(label, args.pselected, @bitCast(u32, args.flags), args.w, args.h);
 }
-extern fn zguiSelectableStatePtr(label: [*:0]const u8, pselected: *bool, flags: u32, w: f32, h: f32) bool;
+extern fn zguiSelectableStatePtr(
+    label: [*:0]const u8,
+    pselected: *bool,
+    flags: u32,
+    w: f32,
+    h: f32,
+) bool;
 //--------------------------------------------------------------------------------------------------
 //
 // Widgets: List Boxes

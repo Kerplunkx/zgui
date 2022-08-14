@@ -759,6 +759,20 @@ ZGUI_API void zguiLabelText(const char* label, const char* fmt, ...) {
     va_end(args);
 }
 
+ZGUI_API void zguiCalcTextSize(
+    const char* txt,
+    const char* txt_end,
+    bool hide_text_after_double_hash,
+    float wrap_width,
+    float* out_w,
+    float* out_h
+) {
+    assert(out_w && out_h);
+    const ImVec2 s = ImGui::CalcTextSize(txt, txt_end, hide_text_after_double_hash, wrap_width);
+    *out_w = s.x;
+    *out_h = s.y;
+}
+
 ZGUI_API bool zguiButton(const char* label, float x, float y) {
     return ImGui::Button(label, { x, y });
 }
@@ -773,6 +787,46 @@ ZGUI_API bool zguiInvisibleButton(const char* str_id, float w, float h, ImGuiBut
 
 ZGUI_API bool zguiArrowButton(const char* str_id, ImGuiDir dir) {
     return ImGui::ArrowButton(str_id, dir);
+}
+
+ZGUI_API void zguiImage(
+    ImTextureID user_texture_id,
+    float w,
+    float h,
+    const float uv0[2],
+    const float uv1[2],
+    const float tint_col[4],
+    const float border_col[4]
+) {
+    ImGui::Image(
+        user_texture_id,
+        { w, h },
+        { uv0[0], uv0[1] },
+        { uv1[0], uv1[1] },
+        { tint_col[0], tint_col[1], tint_col[2], tint_col[3] },
+        { border_col[0], border_col[1], border_col[2], border_col[3] }
+    );
+}
+
+ZGUI_API bool zguiImageButton(
+    ImTextureID user_texture_id,
+    float w,
+    float h,
+    const float uv0[2],
+    const float uv1[2],
+    int frame_padding,
+    const float bg_col[4],
+    const float tint_col[4]
+) {
+    return ImGui::ImageButton(
+        user_texture_id,
+        { w, h },
+        { uv0[0], uv0[1] },
+        { uv1[0], uv1[1] },
+        frame_padding,
+        { bg_col[0], bg_col[1], bg_col[2], bg_col[3] },
+        { tint_col[0], tint_col[1], tint_col[2], tint_col[3] }
+    );
 }
 
 ZGUI_API void zguiBullet(void) {
@@ -839,6 +893,18 @@ ZGUI_API void zguiEndDisabled(void) {
     ImGui::EndDisabled();
 }
 
+ZGUI_API ImGuiStyle* zguiGetStyle(void) {
+    return &ImGui::GetStyle();
+}
+
+ZGUI_API ImGuiStyle zguiStyleInit(void) {
+    return ImGuiStyle();
+}
+
+ZGUI_API void zguiStyleScaleAllSizes(ImGuiStyle* style, float scale_factor) {
+    style->ScaleAllSizes(scale_factor);
+}
+
 ZGUI_API void zguiPushStyleColor4f(ImGuiCol idx, const float col[4]) {
     ImGui::PushStyleColor(idx, { col[0], col[1], col[2], col[3] });
 }
@@ -875,8 +941,20 @@ ZGUI_API void zguiSetNextItemWidth(float item_width) {
     ImGui::SetNextItemWidth(item_width);
 }
 
+ZGUI_API ImFont* zguiGetFont(void) {
+    return ImGui::GetFont();
+}
+
 ZGUI_API float zguiGetFontSize(void) {
     return ImGui::GetFontSize();
+}
+
+ZGUI_API void zguiPushFont(ImFont* font) {
+    ImGui::PushFont(font);
+}
+
+ZGUI_API void zguiPopFont(void) {
+    ImGui::PopFont();
 }
 
 ZGUI_API bool zguiTreeNode(const char* label) {
@@ -971,16 +1049,24 @@ ZGUI_API ImGuiID zguiGetPtrId(const void* ptr_id) {
     return ImGui::GetID(ptr_id);
 }
 
+ZGUI_API ImFont* zguiIoAddFontFromFile(const char* filename, float size_pixels) {
+    return ImGui::GetIO().Fonts->AddFontFromFileTTF(filename, size_pixels, nullptr, nullptr);
+}
+
+ZGUI_API ImFont* zguiIoGetFont(unsigned int index) {
+    return ImGui::GetIO().Fonts->Fonts[index];
+}
+
+ZGUI_API void zguiIoSetDefaultFont(ImFont* font) {
+    ImGui::GetIO().FontDefault = font;
+}
+
 ZGUI_API bool zguiIoGetWantCaptureMouse(void) {
     return ImGui::GetIO().WantCaptureMouse;
 }
 
 ZGUI_API bool zguiIoGetWantCaptureKeyboard(void) {
     return ImGui::GetIO().WantCaptureKeyboard;
-}
-
-ZGUI_API void zguiIoAddFontFromFile(const char* filename, float size_pixels) {
-    ImGui::GetIO().Fonts->AddFontFromFileTTF(filename, size_pixels, nullptr, nullptr);
 }
 
 ZGUI_API void zguiIoSetIniFilename(const char* filename) {
@@ -1045,8 +1131,4 @@ ZGUI_API bool zguiIsAnyItemActive(void) {
 
 ZGUI_API bool zguiIsAnyItemFocused(void) {
     return ImGui::IsAnyItemFocused();
-}
-
-ZGUI_API void zguiImage(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {
-    return ImGui::Image(user_texture_id, size, uv0, uv1, tint_col, border_col);
 }
