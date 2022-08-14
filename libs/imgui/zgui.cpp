@@ -1051,15 +1051,74 @@ ZGUI_API void zguiImage(ImTextureID user_texture_id, const ImVec2& size, const I
     return ImGui::Image(user_texture_id, size, uv0, uv1, tint_col, border_col);
 }
 
-ZGUI_API bool zguiBeginTable(const char* str_id, int column) {
-    return ImGui::BeginTable(str_id,column,0,ImVec2(0.0f, 0.0f),0.0f);
+ZGUI_API bool zguiImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col) {
+    return ImGui::ImageButton(user_texture_id, size, uv0, uv1, frame_padding, bg_col, tint_col);
 }
+
+ZGUI_API bool zguiBeginTable(const char* str_id, int column, ImGuiTableFlags flags, const ImVec2& outer_size,float inner_width) {
+    return ImGui::BeginTable(str_id,column,flags,outer_size,inner_width);
+}
+
 ZGUI_API void zguiEndTable() {
-    ImGui::EndTable();
+    return ImGui::EndTable();
 }
-ZGUI_API void zguiTableNextRow() {
-    ImGui::TableNextRow(0,0.0f);
+
+ZGUI_API void zguiTableNextRow(ImGuiTableRowFlags row_flags, float min_row_height) {
+    return ImGui::TableNextRow(row_flags,min_row_height);
 }
+
 ZGUI_API bool zguiTableNextColumn() {
     return ImGui::TableNextColumn();
+}
+
+ZGUI_API bool zguiTableSetColumnIndex(int column_n) {
+    return ImGui::TableSetColumnIndex(column_n);
+}
+
+ZGUI_API void zguiTableSetupColumn(const char* label, ImGuiTableColumnFlags flags, float init_width_or_weight, ImGuiID user_id) {
+    return ImGui::TableSetupColumn(label, flags, init_width_or_weight, user_id);
+}
+
+ZGUI_API void zguiTableSetupScrollFreeze(int cols, int rows) {
+    return ImGui::TableSetupScrollFreeze(cols, rows);
+}
+
+ZGUI_API void zguiTableHeadersRow() {
+    return ImGui::TableHeadersRow();
+}
+
+ZGUI_API void zguiTableHeader(const char* label) {
+    return ImGui::TableHeader(label);
+}
+
+ZGUI_API ImGuiTableSortSpecs* zguiTableGetSortSpecs() {
+    return ImGui::TableGetSortSpecs();
+}
+
+ZGUI_API int zguiTableGetColumnCount() {
+    return ImGui::TableGetColumnCount();
+}
+
+ZGUI_API int zguiTableGetColumnIndex() {
+    return ImGui::TableGetColumnIndex();
+}
+
+ZGUI_API int zguiTableGetRowIndex() {
+    return ImGui::TableGetRowIndex();
+}
+
+ZGUI_API const char* zguiTableGetColumnName(int column_n) {
+    return ImGui::TableGetColumnName(column_n);
+}
+
+ZGUI_API ImGuiTableColumnFlags zguiTableGetColumnFlags(int column_n) {
+    return ImGui::TableGetColumnFlags(column_n);
+}
+
+ZGUI_API void zguiTableSetColumnEnabled(int column_n, bool v) {
+    return ImGui::TableSetColumnEnabled(column_n,v);
+}
+
+ZGUI_API void zguiTableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n) {
+    return ImGui::TableSetBgColor(target, color, column_n);
 }

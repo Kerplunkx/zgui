@@ -1225,6 +1225,19 @@ pub fn image(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: Imag
     zguiImage(user_texture_id, size, &args.uv0, &args.uv1, &args.tint_colour, &args.border_colour);
 }
 extern fn zguiImage(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, tint_col: *const [4]f32, border_col: *const [4]f32) void;
+
+const ImageButtonParams = struct {
+    uv0: [2]f32 = [2]f32{ 0.0, 0.0 },
+    uv1: [2]f32 = [2]f32{ 1.0, 1.0 },
+    frame_padding: i32 = -1,
+    bg_colour: [4]f32 = [4]f32{ 0.0, 0.0, 0.0, 0.0 },
+    tint_colour: [4]f32 = [4]f32{ 1.0, 1.0, 1.0, 1.0 },
+};
+
+pub fn imageButton(user_texture_id: ?*const anyopaque, size: *const [2]f32, args: ImageButtonParams) void {
+    zguiImageButton(user_texture_id, size, &args.uv0, &args.uv1, &args.frame_padding, &args.bg_colour, &args.tint_colour);
+}
+extern fn zguiImageButton(user_texture_id: ?*const anyopaque, size: *const [2]f32, uv0: *const [2]f32, uv1: *const [2]f32, frame_padding: *const i32, bg_col: *const [4]f32, tint_col: *const [4]f32) void;
 //--------------------------------------------------------------------------------------------------
 //
 // Widgets: Regular Sliders
@@ -2112,10 +2125,60 @@ fn typeToDataTypeEnum(comptime T: type) DataType {
 // Widgets: Table
 //
 //--------------------------------------------------------------------------------------------------
-pub fn beginTable(name: [:0]const u8, column: u32) bool {
-    return zguiBeginTable(name, column);
+const ImGuiTableFlags = packed struct {
+    const ImGuiTableFlagsSizing = enum(u3) {
+        SizingNone,
+        SizingFixedFit,
+        SizingFixedSame,
+        SizingStretchProp,
+        SizingStretchSame,
+    };
+
+    // Features
+    resizable: bool = false,
+    reorderable: bool = false,
+    hideable: bool = false,
+    sortable: bool = false,
+    noSavedSettings: bool = false,
+    contextMenuInBody: bool = false,
+    // Decorations
+    rowBg: bool = false,
+    bordersInnerH: bool = false,
+    bordersOuterH: bool = false,
+    bordersInnerV: bool = false,
+    bordersOuterV: bool = false,
+    noBordersInBody: bool = false,
+    noBordersInBodyUntilResize: bool = false,
+    // Sizing Policy (read above for defaults)
+    sizing: ImGuiTableFlagsSizing = .SizingNone,
+    // Sizing Extra Options
+    noHostExtendX: bool = false,
+    noHostExtendY: bool = false,
+    noKeepColumnsVisible: bool = false,
+    preciseWidths: bool = false,
+    // Clipping
+    noClip: bool = false,
+    // Padding
+    padOuterX: bool = false,
+    noPadOuterX: bool = false,
+    noPadInnerX: bool = false,
+    // Scrolling
+    scrollX: bool = false,
+    scrollY: bool = false,
+    // Sorting
+    sortMulti: bool = false,
+    sortTristate: bool = false,
+
+    padding: u4 = 0,
+    comptime {
+        assert(@sizeOf(@This()) == @sizeOf(u32) and @bitSizeOf(@This()) == @bitSizeOf(u32));
+    }
+};
+
+pub fn beginTable(args: struct { name: [:0]const u8, column: u32, flags: ImGuiTableFlags = .{}, outer_size: [2]f32 = [2]f32{ 0.0, 0.0 }, inner_width: f32 = 0.0 }) bool {
+    return zguiBeginTable(args.name, args.column, @bitCast(u32, args.flags), &args.outer_size, args.inner_width);
 }
-extern fn zguiBeginTable(name: [*:0]const u8, column: u32) bool;
+extern fn zguiBeginTable(name: [*:0]const u8, column: u32, flags: u32, outer_size: *const [2]f32, inner_width: f32) bool;
 
 pub fn endTable() void {
     zguiEndTable();
