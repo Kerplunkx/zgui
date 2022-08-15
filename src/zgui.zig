@@ -2482,9 +2482,174 @@ const PrimitiveDrawList = enum(u8) {
     Foreground = 0x1,
     Background = 0x2,
     Window = 0x4,
+
+    fn bt(self: PrimitiveDrawList) u8 {
+        return @bitCast(u8, self);
+    }
 };
 
 pub fn addLine(from: [2]f32, to: [2]f32, col: u32, args: struct { list: PrimitiveDrawList = .Foreground, thickness: f32 = 1.0 }) void {
     zguiAddLine(&from, &to, col, args.thickness, @bitCast(u8, args.list));
 }
 extern fn zguiAddLine(from: *const [2]f32, to: *const [2]f32, col: u32, thickness: f32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+
+const ImDrawFlags = enum(u32) {
+    None = 0x0,
+    Closed = 0x1,
+    RoundCornersTopLeft = 0x10,
+    RoundCornersTopRight = 0x20,
+    RoundCornersBottomLeft = 0x40,
+    RoundCornersBottomRight = 0x80,
+    //this is different to the No Flags none
+    RoundCornersNone = 0x100,
+    //combinations
+    RoundCornersTop = 0x30,
+    RoundCornersBottom = 0xC0,
+    RoundCornersLeft = 0x50,
+    RoundCornersRight = 0xA0,
+    RoundCornersAll = 0xF0,
+};
+
+pub fn addRect(from: [2]f32, to: [2]f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    rounding: f32 = 0.0,
+    flags: ImDrawFlags = ImDrawFlags.None,
+    thickness: f32 = 1.0,
+}) void {
+    zguiAddRect(&from, &to, col, args.rounding, @bitCast(u32, args.flags), args.thickness, args.list.bt());
+}
+extern fn zguiAddRect(from: *const [2]f32, to: *const [2]f32, col: u32, rounding: f32, flags: u32, thickness: f32, list: u8) void;
+
+pub fn addRectFilled(from: [2]f32, to: [2]f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    rounding: f32 = 0.0,
+    flags: ImDrawFlags = ImDrawFlags.RoundCornersNone,
+}) void {
+    zguiAddRectFilled(&from, &to, col, args.rounding, @bitCast(u32, args.flags), args.list.bt());
+}
+extern fn zguiAddRectFilled(from: *const [2]f32, to: *const [2]f32, col: u32, rounding: f32, flags: u32, list: u8) void;
+
+pub fn addRectFilledMultiColor(from: [2]f32, to: [2]f32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    top_left: u32,
+    top_right: u32,
+    bottom_right: u32,
+    bottom_left: u32,
+}) void {
+    zguiAddRectFilledMultiColor(&from, &to, args.top_left, args.top_right, args.bottom_right, args.bottom_left, args.list.bt());
+}
+extern fn zguiAddRectFilledMultiColor(from: *const [2]f32, to: *const [2]f32, coltl: u32, coltr: u32, colbr: u32, colbl: u32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn addQuad(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    thickness: f32 = 1.0,
+}) void {
+    zguiAddQuad(&p1, &p2, &p3, &p4, col, args.thickness, args.list.bt());
+}
+extern fn zguiAddQuad(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, p4: *const [2]f32, col: u32, thickness: f32, list: u8) void;
+
+pub fn addQuadFilled(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+}) void {
+    zguiAddQuadFilled(&p1, &p2, &p3, &p4, col, args.list.bt());
+}
+extern fn zguiAddQuadFilled(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, p4: *const [2]f32, col: u32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn addTriangle(p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    thickness: f32 = 1.0,
+}) void {
+    zguiAddTriangle(&p1, &p2, &p3, col, args.thickness, args.list.bt());
+}
+extern fn zguiAddTriangle(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, col: u32, thickness: f32, list: u8) void;
+
+pub fn addTriangleFilled(p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+}) void {
+    zguiAddTriangleFilled(&p1, &p2, &p3, col, args.list.bt());
+}
+extern fn zguiAddTriangleFilled(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, col: u32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+
+pub fn addCircle(centre: [2]f32, radius: f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    num_segments: u32 = 0,
+    thickness: f32 = 1.0,
+}) void {
+    zguiAddCircle(&centre, radius, col, args.num_segments, args.thickness, args.list.bt());
+}
+extern fn zguiAddCircle(centre: *const [2]f32, radius: f32, col: u32, num_segments: u32, thickness: f32, list: u8) void;
+
+pub fn addCircleFilled(centre: [2]f32, radius: f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    num_segments: u32 = 0,
+}) void {
+    zguiAddCircleFilled(&centre, radius, col, args.num_segments, args.list.bt());
+}
+extern fn zguiAddCircleFilled(centre: *const [2]f32, radius: f32, col: u32, num_segments: u32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+
+pub fn addNgon(centre: [2]f32, radius: f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    num_segments: u32 = 0,
+    thickness: f32 = 1.0,
+}) void {
+    zguiAddNgon(&centre, radius, col, args.num_segments, args.thickness, args.list.bt());
+}
+extern fn zguiAddNgon(centre: *const [2]f32, radius: f32, col: u32, num_segments: u32, thickness: f32, list: u8) void;
+
+pub fn addNgonFilled(centre: [2]f32, radius: f32, col: u32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    num_segments: u32 = 0,
+}) void {
+    zguiAddNgonFilled(&centre, radius, col, args.num_segments, args.list.bt());
+}
+extern fn zguiAddNgonFilled(centre: *const [2]f32, radius: f32, col: u32, num_segments: u32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+
+pub fn addText(centre: [2]f32, col: u32, text_begin: [:0]const u8, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+}) void {
+    zguiAddText(&centre, col, text_begin, args.list.bt());
+}
+extern fn zguiAddText(centre: *const [2]f32, col: u32, text_begin: [*:0]const u8, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+pub fn addBezierCubic(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    num_segments: u32 = 1,
+}) void {
+    zguiAddBezierCubic(&p1, &p2, &p3, &p4, col, thickness, args.num_segments, args.list.bt());
+}
+extern fn zguiAddBezierCubic(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, p4: *const [2]f32, col: u32, thickness: f32, num_segments: u32, list: u8) void;
+
+pub fn addBezierQuadratic(p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+    num_segments: u32 = 1,
+}) void {
+    zguiAddBezierQuadratic(&p1, &p2, &p3, col, thickness, args.num_segments, args.list.bt());
+}
+extern fn zguiAddBezierQuadratic(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, col: u32, thickness: f32, num_segments: u32, list: u8) void;
+
+//--------------------------------------------------------------------------------------------------
+
+pub fn addPolyline(p1: [*]const [2]f32, num_points: u32, col: u32, flags: ImDrawFlags, thickness: f32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+}) void {
+    zguiAddPolyline(p1, num_points, col, @bitCast(u32, flags), thickness, args.list.bt());
+}
+extern fn zguiAddPolyline(p1: [*]const [2]f32, num_points: u32, col: u32, flags: u32, thickness: f32, list: u8) void;
+
+pub fn addConvexPolyFilled(p1: [*]const [2]f32, num_points: u32, col: u32, thickness: f32, args: struct {
+    list: PrimitiveDrawList = .Foreground,
+}) void {
+    zguiAddConvexPolyFilled(p1, num_points, col, thickness, args.list.bt());
+}
+extern fn zguiAddConvexPolyFilled(p1: [*]const [2]f32, num_points: u32, col: u32, thickness: f32, list: u8) void;
