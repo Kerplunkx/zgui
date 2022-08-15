@@ -1198,3 +1198,14 @@ ZGUI_API void zguiTableSetColumnEnabled(int column_n, bool v) {
 ZGUI_API void zguiTableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n) {
     return ImGui::TableSetBgColor(target, color, column_n);
 }
+
+ImDrawList* drawList(char whichList) {
+    if (whichList & 0x1) { return ImGui::GetForegroundDrawList(); }
+    if (whichList & 0x2) { return ImGui::GetBackgroundDrawList(); }
+    if (whichList & 0x4) { return ImGui::GetWindowDrawList(); }
+    return ImGui::GetForegroundDrawList();
+}
+
+ZGUI_API void zguiAddLine(const ImVec2& from, const ImVec2& to, ImU32 col, float thickness = 1.0f, char list = 0x4) {
+    return drawList(list)->AddLine(from,to,col,thickness);
+}

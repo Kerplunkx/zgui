@@ -2472,3 +2472,19 @@ pub fn tableSetBgColor(target: ImGuiTableBgTarget, color: u32, column_n: i32) vo
     zguiTableSetBgColor(@bitCast(u32, target), color, column_n);
 }
 extern fn zguiTableSetBgColor(target: u32, color: u32, column_n: i32) void;
+
+//--------------------------------------------------------------------------------------------------
+//
+// Primitive Drawing
+//
+//--------------------------------------------------------------------------------------------------
+const PrimitiveDrawList = enum(u8) {
+    Foreground = 0x1,
+    Background = 0x2,
+    Window = 0x4,
+};
+
+pub fn addLine(from: [2]f32, to: [2]f32, col: u32, args: struct { list: PrimitiveDrawList = .Foreground, thickness: f32 = 1.0 }) void {
+    zguiAddLine(&from, &to, col, args.thickness, @bitCast(u8, args.list));
+}
+extern fn zguiAddLine(from: *const [2]f32, to: *const [2]f32, col: u32, thickness: f32, list: u8) void;
