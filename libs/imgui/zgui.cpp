@@ -1199,13 +1199,117 @@ ZGUI_API void zguiTableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int co
     return ImGui::TableSetBgColor(target, color, column_n);
 }
 
+/*
+ Primitive Drawing requires a DrawList to submit primitives to
+ There appears to be 3 valid options exposed by the API.
+ foreground draws over the top of everything
+ background draws behind all winds and foreground
+ window draws in the global coordinate space but clipped to current window
+ */
+#define __DRAWLIST_FOREGROUND   0x1
+#define __DRAWLIST_BACKGROUND   0x2
+#define __DRAWLIST_WINDOW       0x4
+
+//Naive function to return the draw list or default to foreground
 ImDrawList* drawList(char whichList) {
-    if (whichList & 0x1) { return ImGui::GetForegroundDrawList(); }
-    if (whichList & 0x2) { return ImGui::GetBackgroundDrawList(); }
-    if (whichList & 0x4) { return ImGui::GetWindowDrawList(); }
-    return ImGui::GetForegroundDrawList();
+    if (whichList & __DRAWLIST_FOREGROUND) {
+        return ImGui::GetForegroundDrawList();
+    }
+    else if (whichList & __DRAWLIST_BACKGROUND) {
+        return ImGui::GetBackgroundDrawList();
+    }
+    else if (whichList & __DRAWLIST_WINDOW) {
+        return ImGui::GetWindowDrawList();
+    }
+    else {
+        return ImGui::GetForegroundDrawList();
+    }
 }
 
-ZGUI_API void zguiAddLine(const ImVec2& from, const ImVec2& to, ImU32 col, float thickness = 1.0f, char list = 0x4) {
+ZGUI_API void zguiAddLine(const ImVec2& from, const ImVec2& to, ImU32 col, float thickness = 1.0f, char list = __DRAWLIST_FOREGROUND) {
     return drawList(list)->AddLine(from,to,col,thickness);
 }
+
+ZGUI_API void  AddRect(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0, float thickness = 1.0f, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddRect(p_min,p_max,col,rounding,flags,thickness);
+}
+
+ZGUI_API void  AddRectFilled(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddRectFilled(p_min,p_max, col, rounding, flags);
+}
+
+ZGUI_API void  AddRectFilledMultiColor(const ImVec2& p_min, const ImVec2& p_max, ImU32 col_upr_left, ImU32 col_upr_right, ImU32 col_bot_right, ImU32 col_bot_left, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddRectFilledMultiColor(p_min,p_max,col_upr_left,col_upr_right,col_bot_right,col_bot_left);
+}
+
+ZGUI_API void  AddQuad(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness = 1.0f, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)-> AddQuad(p1,p2,p3,p4,col,thickness);
+}
+
+
+ZGUI_API void  AddQuadFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddQuadFilled(p1,p2,p3,p4,col);
+}
+
+
+ZGUI_API void  AddTriangle(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness = 1.0f, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddTriangle(p1,p2,p3,col);
+}
+
+
+ZGUI_API void  AddTriangleFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddTriangleFilled(p1,p2,p3,col);
+}
+
+
+ZGUI_API void  AddCircle(const ImVec2& center, float radius, ImU32 col, int num_segments = 0, float thickness = 1.0f, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddCircle(center,radius,col,num_segments,thickness);
+}
+
+
+ZGUI_API void  AddCircleFilled(const ImVec2& center, float radius, ImU32 col, int num_segments = 0, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddCircleFilled(center,radius,col,num_segments);
+}
+
+
+ZGUI_API void  AddNgon(const ImVec2& center, float radius, ImU32 col, int num_segments, float thickness = 1.0f, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddNgon(center,radius,col,num_segments,thickness);
+}
+
+
+ZGUI_API void  AddNgonFilled(const ImVec2& center, float radius, ImU32 col, int num_segments, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddNgonFilled(center,radius,col,num_segments);
+}
+
+
+ZGUI_API void  AddText(const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddText(pos,col,text_begin, text_end);
+}
+
+
+ZGUI_API void  AddTextWrapped(const ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = NULL, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddText(font,font_size,pos,col,text_begin,text_end,wrap_width,cpu_fine_clip_rect);
+}
+
+
+ZGUI_API void  AddPolyline(const ImVec2* points, int num_points, ImU32 col, ImDrawFlags flags, float thickness, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddPolyline(points,num_points,col,flags,thickness);
+}
+
+
+ZGUI_API void  AddConvexPolyFilled(const ImVec2* points, int num_points, ImU32 col, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddConvexPolyFilled(points,num_points,col);
+}
+
+
+// Cubic Bezier (4 control points)
+ZGUI_API void  AddBezierCubic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness, int num_segments = 0, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddBezierCubic(p1,p2,p3,p4,col,thickness,num_segments);
+}
+
+// Quadratic Bezier (3 control points)
+ZGUI_API void  AddBezierQuadratic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness, int num_segments = 0, char list = __DRAWLIST_FOREGROUND) {
+    return drawList(list)->AddBezierQuadratic(p1,p2,p3,col,thickness,num_segments);
+}
+
+
