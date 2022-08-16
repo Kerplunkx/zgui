@@ -2488,8 +2488,8 @@ const PrimitiveDrawList = enum(u8) {
     }
 };
 
-pub fn addLine(from: [2]f32, to: [2]f32, col: u32, args: struct { list: PrimitiveDrawList = .Foreground, thickness: f32 = 1.0 }) void {
-    zguiAddLine(&from, &to, col, args.thickness, @bitCast(u8, args.list));
+pub fn addLine(points: struct { from: [2]f32, to: [2]f32 }, col: u32, args: struct { list: PrimitiveDrawList = .Foreground, thickness: f32 = 1.0 }) void {
+    zguiAddLine(&points.from, &points.to, col, args.thickness, @bitCast(u8, args.list));
 }
 extern fn zguiAddLine(from: *const [2]f32, to: *const [2]f32, col: u32, thickness: f32, list: u8) void;
 
@@ -2512,65 +2512,65 @@ const ImDrawFlags = enum(u32) {
     RoundCornersAll = 0xF0,
 };
 
-pub fn addRect(from: [2]f32, to: [2]f32, col: u32, args: struct {
+pub fn addRect(points: struct { from: [2]f32, to: [2]f32 }, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     rounding: f32 = 0.0,
     flags: ImDrawFlags = ImDrawFlags.None,
     thickness: f32 = 1.0,
 }) void {
-    zguiAddRect(&from, &to, col, args.rounding, @bitCast(u32, args.flags), args.thickness, args.list.bt());
+    zguiAddRect(&points.from, &points.to, col, args.rounding, @bitCast(u32, args.flags), args.thickness, args.list.bt());
 }
 extern fn zguiAddRect(from: *const [2]f32, to: *const [2]f32, col: u32, rounding: f32, flags: u32, thickness: f32, list: u8) void;
 
-pub fn addRectFilled(from: [2]f32, to: [2]f32, col: u32, args: struct {
+pub fn addRectFilled(points: struct { from: [2]f32, to: [2]f32 }, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     rounding: f32 = 0.0,
     flags: ImDrawFlags = ImDrawFlags.RoundCornersNone,
 }) void {
-    zguiAddRectFilled(&from, &to, col, args.rounding, @bitCast(u32, args.flags), args.list.bt());
+    zguiAddRectFilled(&points.from, &points.to, col, args.rounding, @bitCast(u32, args.flags), args.list.bt());
 }
 extern fn zguiAddRectFilled(from: *const [2]f32, to: *const [2]f32, col: u32, rounding: f32, flags: u32, list: u8) void;
 
-pub fn addRectFilledMultiColor(from: [2]f32, to: [2]f32, args: struct {
+pub fn addRectFilledMultiColor(points: struct { from: [2]f32, to: [2]f32 }, args: struct {
     list: PrimitiveDrawList = .Foreground,
     top_left: u32,
     top_right: u32,
     bottom_right: u32,
     bottom_left: u32,
 }) void {
-    zguiAddRectFilledMultiColor(&from, &to, args.top_left, args.top_right, args.bottom_right, args.bottom_left, args.list.bt());
+    zguiAddRectFilledMultiColor(&points.from, &points.to, args.top_left, args.top_right, args.bottom_right, args.bottom_left, args.list.bt());
 }
 extern fn zguiAddRectFilledMultiColor(from: *const [2]f32, to: *const [2]f32, coltl: u32, coltr: u32, colbr: u32, colbl: u32, list: u8) void;
 
 //--------------------------------------------------------------------------------------------------
-pub fn addQuad(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, args: struct {
+pub fn addQuad(points: struct { p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32 }, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     thickness: f32 = 1.0,
 }) void {
-    zguiAddQuad(&p1, &p2, &p3, &p4, col, args.thickness, args.list.bt());
+    zguiAddQuad(&points.p1, &points.p2, &points.p3, &points.p4, col, args.thickness, args.list.bt());
 }
 extern fn zguiAddQuad(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, p4: *const [2]f32, col: u32, thickness: f32, list: u8) void;
 
-pub fn addQuadFilled(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, args: struct {
+pub fn addQuadFilled(points: struct { p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32 }, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
 }) void {
-    zguiAddQuadFilled(&p1, &p2, &p3, &p4, col, args.list.bt());
+    zguiAddQuadFilled(&points.p1, &points.p2, &points.p3, &points.p4, col, args.list.bt());
 }
 extern fn zguiAddQuadFilled(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, p4: *const [2]f32, col: u32, list: u8) void;
 
 //--------------------------------------------------------------------------------------------------
-pub fn addTriangle(p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, args: struct {
+pub fn addTriangle(points: struct { p1: [2]f32, p2: [2]f32, p3: [2]f32 }, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     thickness: f32 = 1.0,
 }) void {
-    zguiAddTriangle(&p1, &p2, &p3, col, args.thickness, args.list.bt());
+    zguiAddTriangle(&points.p1, &points.p2, &points.p3, col, args.thickness, args.list.bt());
 }
 extern fn zguiAddTriangle(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, col: u32, thickness: f32, list: u8) void;
 
-pub fn addTriangleFilled(p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, args: struct {
+pub fn addTriangleFilled(points: struct { p1: [2]f32, p2: [2]f32, p3: [2]f32 }, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
 }) void {
-    zguiAddTriangleFilled(&p1, &p2, &p3, col, args.list.bt());
+    zguiAddTriangleFilled(&points.p1, &points.p2, &points.p3, col, args.list.bt());
 }
 extern fn zguiAddTriangleFilled(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, col: u32, list: u8) void;
 
@@ -2622,19 +2622,19 @@ pub fn addText(centre: [2]f32, col: u32, text_begin: [:0]const u8, args: struct 
 extern fn zguiAddText(centre: *const [2]f32, col: u32, text_begin: [*:0]const u8, list: u8) void;
 
 //--------------------------------------------------------------------------------------------------
-pub fn addBezierCubic(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, args: struct {
+pub fn addBezierCubic(points: struct { start: [2]f32, control_start: [2]f32, control_finish: [2]f32, finish: [2]f32 }, col: u32, thickness: f32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     num_segments: u32 = 1,
 }) void {
-    zguiAddBezierCubic(&p1, &p2, &p3, &p4, col, thickness, args.num_segments, args.list.bt());
+    zguiAddBezierCubic(&points.start, &points.control_start, &points.control_finish, &points.finish, col, thickness, args.num_segments, args.list.bt());
 }
 extern fn zguiAddBezierCubic(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, p4: *const [2]f32, col: u32, thickness: f32, num_segments: u32, list: u8) void;
 
-pub fn addBezierQuadratic(p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, args: struct {
+pub fn addBezierQuadratic(points: struct { start: [2]f32, control: [2]f32, finish: [2]f32 }, col: u32, thickness: f32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     num_segments: u32 = 1,
 }) void {
-    zguiAddBezierQuadratic(&p1, &p2, &p3, col, thickness, args.num_segments, args.list.bt());
+    zguiAddBezierQuadratic(&points.start, &points.control, &points.finish, col, thickness, args.num_segments, args.list.bt());
 }
 extern fn zguiAddBezierQuadratic(p1: *const [2]f32, p2: *const [2]f32, p3: *const [2]f32, col: u32, thickness: f32, num_segments: u32, list: u8) void;
 
