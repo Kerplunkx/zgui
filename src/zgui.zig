@@ -2512,33 +2512,49 @@ const ImDrawFlags = enum(u32) {
     RoundCornersAll = 0xF0,
 };
 
-pub fn addRect(points: struct { from: [2]f32, to: [2]f32 }, col: u32, args: struct {
+const AxisAlignedGeometry = struct {
+    from: [2]f32,
+    to: ?[2]f32 = null,
+    size: ?[2]f32 = null,
+
+    fn dest(self: AxisAlignedGeometry) [2]f32 {
+        if (self.to) |toPoint| {
+            return toPoint;
+        }
+        if (self.size) |toSize| {
+            return .{ self.from[0] + toSize[0], self.from[1] + toSize[1] };
+        }
+        return self.from;
+    }
+};
+
+pub fn addRect(points: AxisAlignedGeometry, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     rounding: f32 = 0.0,
     flags: ImDrawFlags = ImDrawFlags.None,
     thickness: f32 = 1.0,
 }) void {
-    zguiAddRect(&points.from, &points.to, col, args.rounding, @bitCast(u32, args.flags), args.thickness, args.list.bt());
+    zguiAddRect(&points.from, &points.dest(), col, args.rounding, @bitCast(u32, args.flags), args.thickness, args.list.bt());
 }
 extern fn zguiAddRect(from: *const [2]f32, to: *const [2]f32, col: u32, rounding: f32, flags: u32, thickness: f32, list: u8) void;
 
-pub fn addRectFilled(points: struct { from: [2]f32, to: [2]f32 }, col: u32, args: struct {
+pub fn addRectFilled(points: AxisAlignedGeometry, col: u32, args: struct {
     list: PrimitiveDrawList = .Foreground,
     rounding: f32 = 0.0,
     flags: ImDrawFlags = ImDrawFlags.RoundCornersNone,
 }) void {
-    zguiAddRectFilled(&points.from, &points.to, col, args.rounding, @bitCast(u32, args.flags), args.list.bt());
+    zguiAddRectFilled(&points.from, &points.dest(), col, args.rounding, @bitCast(u32, args.flags), args.list.bt());
 }
 extern fn zguiAddRectFilled(from: *const [2]f32, to: *const [2]f32, col: u32, rounding: f32, flags: u32, list: u8) void;
 
-pub fn addRectFilledMultiColor(points: struct { from: [2]f32, to: [2]f32 }, args: struct {
+pub fn addRectFilledMultiColor(points: AxisAlignedGeometry, args: struct {
     list: PrimitiveDrawList = .Foreground,
     top_left: u32,
     top_right: u32,
     bottom_right: u32,
     bottom_left: u32,
 }) void {
-    zguiAddRectFilledMultiColor(&points.from, &points.to, args.top_left, args.top_right, args.bottom_right, args.bottom_left, args.list.bt());
+    zguiAddRectFilledMultiColor(&points.from, &points.dest(), args.top_left, args.top_right, args.bottom_right, args.bottom_left, args.list.bt());
 }
 extern fn zguiAddRectFilledMultiColor(from: *const [2]f32, to: *const [2]f32, coltl: u32, coltr: u32, colbr: u32, colbl: u32, list: u8) void;
 
