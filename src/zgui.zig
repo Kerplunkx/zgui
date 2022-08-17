@@ -2514,17 +2514,22 @@ const ImDrawFlags = enum(u32) {
 
 const AxisAlignedGeometry = struct {
     from: [2]f32,
-    to: ?[2]f32 = null,
-    size: ?[2]f32 = null,
+    dimension: union(AAGeometryTag) {
+        to: [2]f32,
+        size: [2]f32,
+    },
+
+    const AAGeometryTag = enum { to, size };
 
     fn dest(self: AxisAlignedGeometry) [2]f32 {
-        if (self.to) |toPoint| {
-            return toPoint;
+        switch (self.dimension) {
+            .to => |toPoint| {
+                return toPoint;
+            },
+            .size => |toSize| {
+                return .{ self.from[0] + toSize[0], self.from[1] + toSize[1] };
+            },
         }
-        if (self.size) |toSize| {
-            return .{ self.from[0] + toSize[0], self.from[1] + toSize[1] };
-        }
-        return self.from;
     }
 };
 
