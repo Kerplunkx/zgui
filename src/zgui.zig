@@ -2653,3 +2653,21 @@ pub fn addConvexPolyFilled(p1: [*]const [2]f32, num_points: u32, col: u32, thick
     zguiAddConvexPolyFilled(p1, num_points, col, thickness, args.list.bt());
 }
 extern fn zguiAddConvexPolyFilled(p1: [*]const [2]f32, num_points: u32, col: u32, thickness: f32, list: u8) void;
+//--------------------------------------------------------------------------------------------------
+//
+// Mouse Input
+//
+//--------------------------------------------------------------------------------------------------
+pub fn isMouseDragging(mousebutton: MouseButton, args: struct {
+    lock_threshold: f32 = -1.0,
+}) bool {
+    return zguiIsMouseDragging(mousebutton, args.lock_threshold);
+}
+extern fn zguiIsMouseDragging(mousebutton: MouseButton, lock_threshold: f32) bool;
+
+pub fn getMousePos() [2]f32 {
+    var pos: [2]f32 = undefined;
+    zguiGetMousePos(&pos);
+    return pos;
+}
+extern fn zguiGetMousePos(pos: *[2]f32) void;

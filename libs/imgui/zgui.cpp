@@ -1305,4 +1305,16 @@ ZGUI_API void zguiAddBezierQuadratic(const ImVec2& p1, const ImVec2& p2, const I
     return drawList(list)->AddBezierQuadratic(p1,p2,p3,col,thickness,num_segments);
 }
 
+/*
+ * Mouse Input Functions
+ * */
+ZGUI_API bool zguiIsMouseDragging(ImGuiMouseButton button, float lock_threshold = -1.0f) {
+    return ImGui::IsMouseDragging(button, lock_threshold);
+}
+
+ZGUI_API void zguiGetMousePos(float pos[2]) {
+    const ImVec2 p = ImGui::GetMousePos();
+    pos[0] = p.x;
+    pos[1] = p.y;
+}
 
