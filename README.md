@@ -10,6 +10,7 @@ zgui.link_imgui(exe);
 exe.addPackage(zgui.zgui);
 exe.addPackage(zgui.zgui_glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
 exe.addPackage(zgui.zgui_opengl); //Add OpenGL support for Imgui
+exe.addPackage(zgui.zgui_vulkan); //Add Vulkan support for Imgui
 ```
 
 ## To run Examples
@@ -18,7 +19,9 @@ Please make sure the contents of this repository(excluding examples) are copied 
 ## Currently Supported
 - OpenGL
 - GLFW (mach-glfw)
+- Vulkan (Experimental)
 
 ## Planned
-- Vulkan
+- DirectX 10
+- DirectX 11
 + more

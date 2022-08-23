@@ -12,6 +12,7 @@ pub fn link_imgui(exe: *std.build.LibExeObjStep) void {
     exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/zgui.cpp", &.{""});
     exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_impl_glfw.cpp", &.{""});
     exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_impl_opengl3.cpp", &.{""});
+    exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_impl_vulkan.cpp", &.{""});
 }
 
 inline fn thisDir() []const u8 {
@@ -31,4 +32,9 @@ pub const zgui_opengl = std.build.Pkg{
 pub const zgui_glfw = std.build.Pkg{
     .name = "zgui_glfw",
     .source = .{ .path = thisDir() ++ "/src/zgui_glfw.zig" },
+};
+
+pub const zgui_vulkan = std.build.Pkg{
+    .name = "zgui_vulkan",
+    .source = .{ .path = thisDir() ++ "/src/zgui_vulkan.zig" },
 };
