@@ -2692,3 +2692,40 @@ pub fn getMousePos() [2]f32 {
     return pos;
 }
 extern fn zguiGetMousePos(pos: *[2]f32) void;
+
+pub fn isMouseDown(mousebutton: MouseButton) bool {
+    return zguiIsMouseDown(mousebutton);
+}
+extern fn zguiIsMouseDown(mousebutton: MouseButton) bool;
+
+pub fn isMouseClicked(mousebutton: MouseButton) bool {
+    return zguiIsMouseClicked(mousebutton);
+}
+
+extern fn zguiIsMouseClicked(mousebutton: MouseButton) bool;
+
+pub fn isMouseReleased(mousebutton: MouseButton) bool {
+    return zguiIsMouseReleased(mousebutton);
+}
+
+extern fn zguiIsMouseReleased(mousebutton: MouseButton) bool;
+
+pub fn isMouseDoubleClicked(mousebutton: MouseButton) bool {
+    return zguiIsMouseDoubleClicked(mousebutton);
+}
+extern fn zguiIsMouseDoubleClicked(mousebutton: MouseButton) bool;
+
+pub fn getMouseClickedCount(mousebutton: MouseButton) u32 {
+    return zguiGetMouseClickedCount(mousebutton);
+}
+extern fn zguiGetMouseClickedCount(mousebutton: MouseButton) u32;
+
+pub fn getMousePosOnOpeningCurrentPopup(pos: *[2]f32) void {
+    return zguiGetMousePosOnOpeningCurrentPopup(pos);
+}
+extern fn zguiGetMousePosOnOpeningCurrentPopup(pos: *[2]f32) void;
+
+pub fn isMousePosValid(pos: [*]const [2]f32) bool {
+    return zguiIsMousePosValid(pos);
+}
+extern fn zguiIsMousePosValid(pos: [*]const [2]f32) bool;

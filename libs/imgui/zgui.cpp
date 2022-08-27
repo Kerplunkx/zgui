@@ -1318,3 +1318,47 @@ ZGUI_API void zguiGetMousePos(float pos[2]) {
     pos[1] = p.y;
 }
 
+ZGUI_API bool zguiIsMouseDown(ImGuiMouseButton button) {
+    return ImGui::IsMouseDown(button);
+}
+
+ZGUI_API bool zguiIsMouseClicked(ImGuiMouseButton button, bool repeat) {
+    return ImGui::IsMouseClicked(button, repeat);
+}
+
+ZGUI_API bool zguiIsMouseReleased(ImGuiMouseButton button) {
+    return ImGui::IsMouseReleased(button);
+}
+
+ZGUI_API bool zguiIsMouseDoubleClicked(ImGuiMouseButton button) {
+    return ImGui::IsMouseDoubleClicked(button);
+}
+
+ZGUI_API int zguiGetMouseClickedCount(ImGuiMouseButton button) {
+    return ImGui::GetMouseClickedCount(button);
+}
+
+ZGUI_API void zguiGetMousePosOnOpeningCurrentPopup(float pos[2]) {
+    const ImVec2 p = ImGui::GetMousePosOnOpeningCurrentPopup();
+    pos[0] = p.x;
+    pos[1] = p.y;
+}
+
+ZGUI_API bool zguiIsMousePosValid(const ImVec2 mouse_pos) {
+    return ImGui::IsMousePosValid(&mouse_pos);
+}
+
+ZGUI_API bool zguiIsAnyMouseDown() {
+    return ImGui::IsAnyMouseDown();
+}
+
+ZGUI_API void zguiGetMouseDragDelta(ImGuiMouseButton button, float lock_threshold, float pos[2]) {
+    const ImVec2 p = ImGui::GetMouseDragDelta(button, lock_threshold);
+    pos[0] = p.x;
+    pos[1] = p.y;
+}
+
+ZGUI_API void zguiResetMouseDragDelta(ImGuiMouseButton button) {
+    ImGui::ResetMouseDragDelta(button);
+}
+
