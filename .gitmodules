@@ -1,3 +1,9 @@
+[submodule "examples/deps/zgui"]
+	path = examples/deps/zgui
+	url = https://github.com/ArtemisX64/zgui.git
+[submodule "deps/mach-glfw"]
+	path = deps/mach-glfw
+	url = https://github.com/hexops/mach-glfw.git
 [submodule "examples/deps/mach-glfw"]
 	path = examples/deps/mach-glfw
 	url = https://github.com/hexops/mach-glfw.git
