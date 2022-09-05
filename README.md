@@ -5,11 +5,10 @@ It contains a clone of [zgui](https://github.com/michal-z/zig-gamedev/tree/main/
 Clone this repo, copy it to `root` of your project(`root/lib` is more preferred)
 In your build.zig file, add
 ```zig
-zgui.linkImgui(exe);
-exe.addPackage(zgui.pkg);
-exe.addPackage(zgui.glfw); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
-exe.addPackage(zgui.opengl); //Add OpenGL support for Imgui
-exe.addPackage(zgui.vulkan); //Add Vulkan support for Imgui
+exe.addPackage(zgui.zgui(exe));
+exe.addPackage(zgui.glfw(exe)); //Make sure to add glfw as dependency (Prefered binding is mach_glfw)
+exe.addPackage(zgui.opengl(exe)); //Add OpenGL support for Imgui
+exe.addPackage(zgui.vulkan(exe)); //Add Vulkan support for Imgui
 ```
 
 ## To run Examples
