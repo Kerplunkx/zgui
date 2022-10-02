@@ -2,7 +2,7 @@ const std = @import("std");
 
 pub fn zgui(exe: *std.build.LibExeObjStep) std.build.Pkg {
     exe.linkLibCpp();
-    exe.addIncludeDir(comptime thisDir() ++ "/libs");
+    exe.addIncludePath(comptime thisDir() ++ "/libs");
     exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui.cpp", &.{""});
     exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_widgets.cpp", &.{""});
     exe.addCSourceFile(comptime thisDir() ++ "/libs/imgui/imgui_tables.cpp", &.{""});
